@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Dimensão Oculta: Análise para Arquitetura Funcional</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Fontes -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #fcfbf9; /* Warm Neutral Background */
+            color: #2d3748;
+        }
+        h1, h2, h3, .serif {
+            font-family: 'Playfair Display', serif;
+        }
+        .chart-container {
+            position: relative;
+            margin: auto;
+            width: 100%;
+            height: 100%;
+        }
+        .card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .card:hover {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .thesis-note {
+            border-left: 4px solid #7c9082; /* Sage Green */
+            background-color: #f1f5f2;
+        }
+        .nav-active {
+            border-bottom: 2px solid #2d3748;
+            font-weight: 600;
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e0;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a0aec0;
+        }
+    </style>
+
+    <!-- Chosen Palette: Organic Academia (Warm Off-Whites, Deep Charcoal, Sage Green, Muted Clay) -->
+    <!-- Application Structure Plan: 
+         1. Hero Section: Contextualizes the book within the user's Thesis goal.
+         2. Interactive Proxemic Zones: The core metric of the book. A Doughnut chart acts as a controller to explore distance definitions.
+         3. Sensory Apparatus: A Bar chart relating sensory inputs (Heat, Smell, Touch) to space, crucial for "Functional" design beyond just visual.
+         4. Cross-Cultural Radar: A Radar chart comparing "Space Definitions" across cultures (German vs. US vs. Arab) to show that "Function" is relative.
+         5. Architecture Types: Cards distinguishing Fixed, Semi-Fixed, and Informal space.
+         6. Thesis Synthesis: A concluding section specifically bridging Hall's theory to the User's Functional Architecture Model.
+    -->
+    <!-- Visualization & Content Choices:
+         - Zones: Doughnut Chart. Goal: Inform/Visualize Radii. Interaction: Click segment to read detailed architectural implication.
+         - Culture: Radar Chart. Goal: Compare complex qualitative traits. Interaction: Toggle datasets.
+         - Senses: Bar Chart. Goal: Show intensity decay over distance.
+         - CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. All visuals are HTML/Tailwind or Canvas (Chart.js).
+    -->
+</head>
+<body class="antialiased">
+
+    <!-- Navigation -->
+    <nav class="sticky top-0 z-50 bg-[#fcfbf9]/95 backdrop-blur-sm border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <span class="text-xl font-bold serif text-gray-800">A Dimensão Oculta</span>
+                </div>
+                <div class="hidden md:flex space-x-8 items-center">
+                    <button onclick="scrollToSection('intro')" class="text-gray-600 hover:text-black transition">Introdução</button>
+                    <button onclick="scrollToSection('zones')" class="text-gray-600 hover:text-black transition">Zonas Proxêmicas</button>
+                    <button onclick="scrollToSection('senses')" class="text-gray-600 hover:text-black transition">Aparelho Sensorial</button>
+                    <button onclick="scrollToSection('culture')" class="text-gray-600 hover:text-black transition">Cultura & Espaço</button>
+                    <button onclick="scrollToSection('synthesis')" class="px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-700 transition">Síntese Tese</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-16">
+
+        <!-- Hero / Context -->
+        <section id="intro" class="text-center space-y-6 animate-fade-in-up">
+            <h1 class="text-4xl md:text-5xl font-bold text-gray-900 leading-tight">
+                Proxêmica como Base da <br><span class="text-[#7c9082]">Arquitetura Funcional</span>
+            </h1>
+            <p class="max-w-3xl mx-auto text-lg text-gray-600 leading-relaxed">
+                Uma análise interativa de <em>"The Hidden Dimension"</em> de Edward T. Hall.
+                Esta ferramenta decodifica como o homem usa o espaço como uma elaboração especializada da cultura, 
+                fornecendo os dados biológicos e sensoriais necessários para fundamentar seu 
+                <strong>Modelo de Arquitetura Funcional</strong>.
+            </p>
+            <div class="flex justify-center gap-4">
+                <div class="p-4 bg-white rounded-lg border border-gray-200 shadow-sm max-w-xs">
+                    <div class="text-2xl mb-2">📐</div>
+                    <h3 class="font-bold">O Espaço Fala</h3>
+                    <p class="text-sm text-gray-500">O espaço é um sistema de comunicação, não apenas um vazio a ser preenchido.</p>
+                </div>
+                <div class="p-4 bg-white rounded-lg border border-gray-200 shadow-sm max-w-xs">
+                    <div class="text-2xl mb-2">🧠</div>
+                    <h3 class="font-bold">Biologia + Cultura</h3>
+                    <p class="text-sm text-gray-500">A função arquitetônica deve respeitar imperativos biológicos (territorialidade) filtrados pela cultura.</p>
+                </div>
+                <div class="p-4 bg-white rounded-lg border border-gray-200 shadow-sm max-w-xs">
+                    <div class="text-2xl mb-2">👁️</div>
+                    <h3 class="font-bold">Multissensorial</h3>
+                    <p class="text-sm text-gray-500">Projetar apenas para o olho (espaço visual) ignora 80% da experiência espacial humana.</p>
+                </div>
+            </div>
+        </section>
+
+        <hr class="border-gray-200">
+
+        <!-- SECTION 1: THE ZONES (Interactive) -->
+        <section id="zones">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-10">
+                <div class="lg:col-span-5 space-y-4">
+                    <h2 class="text-3xl font-bold text-gray-900">As 4 Zonas de Distância</h2>
+                    <p class="text-gray-600">
+                        Hall categoriza o espaço interpessoal em quatro zonas distintas. Para a Arquitetura Funcional, 
+                        estas zonas ditam o layout do mobiliário, o tamanho das salas e a densidade de ocupação.
+                    </p>
+                    <div class="thesis-note p-4 rounded-r-md text-sm">
+                        <strong>Nota para a Tese:</strong> A "função" de um ambiente falha quando a arquitetura força a interação social em uma distância íntima (stress) ou isola indivíduos em distância pública (alienação).
+                    </div>
+                    
+                    <!-- Dynamic Description Box -->
+                    <div id="zone-description" class="card p-6 border-l-4 border-blue-500 mt-6 min-h-[250px]">
+                        <h3 class="text-xl font-bold text-blue-900 mb-2" id="zone-title">Selecione uma Zona</h3>
+                        <p class="text-gray-700 text-sm mb-4" id="zone-text">
+                            Clique no gráfico ao lado para explorar as métricas exatas e as implicações arquitetônicas de cada zona proxêmica.
+                        </p>
+                        <div class="bg-blue-50 p-3 rounded text-xs text-blue-800 font-mono" id="zone-metric">
+                            Métrica: --
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Visualization: Chart.js Doughnut -->
+                <div class="lg:col-span-7 flex flex-col items-center justify-center">
+                    <div class="w-full max-w-md relative">
+                        <div class="chart-container" style="height: 400px; width: 100%;">
+                            <canvas id="zonesChart"></canvas>
+                        </div>
+                        <!-- Instruction Overlay -->
+                        <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                            <span class="text-gray-400 opacity-20 text-6xl font-serif">🚶</span>
+                        </div>
+                    </div>
+                    <p class="text-center text-xs text-gray-400 mt-2">Clique nos anéis para ver detalhes.</p>
+                </div>
+            </div>
+             
+        </section>
+
+        <!-- SECTION 2: SENSORY SPACE -->
+        <section id="senses" class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                <div class="order-2 md:order-1">
+                    <div class="chart-container" style="height: 350px; width: 100%;">
+                        <canvas id="sensesChart"></canvas>
+                    </div>
+                </div>
+                <div class="order-1 md:order-2 space-y-4">
+                    <h2 class="text-3xl font-bold text-gray-900">O Espaço Sensorial</h2>
+                    <p class="text-gray-600">
+                        O homem percebe o espaço através de todos os sentidos, não apenas a visão. Hall argumenta que a arquitetura moderna tende a atrofiar os espaços auditivos, olfativos e térmicos em favor de um espaço visual estéril.
+                    </p>
+                    <ul class="space-y-3 mt-4">
+                        <li class="flex items-start">
+                            <span class="bg-red-100 text-red-800 text-xs font-bold px-2 py-1 rounded mr-2 mt-1">Térmico</span>
+                            <span class="text-sm text-gray-600">O calor corporal é detectável nas zonas íntimas. A arquitetura de aglomeração aumenta o calor e, consequentemente, a resposta emocional.</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="bg-yellow-100 text-yellow-800 text-xs font-bold px-2 py-1 rounded mr-2 mt-1">Olfativo</span>
+                            <span class="text-sm text-gray-600">Químicos do corpo distinguem indivíduos e estados emocionais. A desodorização ocidental do espaço reduz a informação sensorial.</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="bg-purple-100 text-purple-800 text-xs font-bold px-2 py-1 rounded mr-2 mt-1">Visual</span>
+                            <span class="text-sm text-gray-600">A visão foca detalhes na zona íntima, mas torna-se periférica na zona pública. O design deve se adaptar a esse "cone de visão".</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: CULTURE & COMPARISON -->
+        <section id="culture">
+            <div class="mb-8 text-center">
+                <h2 class="text-3xl font-bold text-gray-900">A Relatividade Cultural da Função</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto mt-2">
+                    O que é "funcional" para um americano pode ser "frio" para um árabe ou "intrusivo" para um alemão. 
+                    Seu modelo arquitetônico deve considerar a variável cultural.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Controls -->
+                <div class="lg:col-span-1 space-y-4">
+                    <div class="card p-6">
+                        <h4 class="font-bold text-gray-800 mb-4">Parâmetros Culturais</h4>
+                        <div class="space-y-2">
+                            <button onclick="toggleDataset(0)" class="w-full text-left px-4 py-2 rounded border border-gray-200 hover:bg-gray-50 text-sm flex justify-between items-center transition">
+                                <span>🇺🇸 Americanos (Classe Média)</span>
+                                <span class="w-3 h-3 rounded-full bg-blue-500"></span>
+                            </button>
+                            <button onclick="toggleDataset(1)" class="w-full text-left px-4 py-2 rounded border border-gray-200 hover:bg-gray-50 text-sm flex justify-between items-center transition">
+                                <span>🇩🇪 Alemães</span>
+                                <span class="w-3 h-3 rounded-full bg-red-500"></span>
+                            </button>
+                            <button onclick="toggleDataset(2)" class="w-full text-left px-4 py-2 rounded border border-gray-200 hover:bg-gray-50 text-sm flex justify-between items-center transition">
+                                <span>🇯🇵 Japoneses</span>
+                                <span class="w-3 h-3 rounded-full bg-green-500"></span>
+                            </button>
+                            <button onclick="toggleDataset(3)" class="w-full text-left px-4 py-2 rounded border border-gray-200 hover:bg-gray-50 text-sm flex justify-between items-center transition">
+                                <span>🇸🇦 Árabes</span>
+                                <span class="w-3 h-3 rounded-full bg-orange-500"></span>
+                            </button>
+                        </div>
+                        <div class="mt-6 text-xs text-gray-500 italic">
+                            *Dados baseados nas observações qualitativas de Hall sobre privacidade, portas, e interação sensorial.
+                        </div>
+                    </div>
+                    
+                    <!-- Insight Box -->
+                    <div id="culture-insight" class="thesis-note p-4 rounded text-sm mt-4">
+                        <strong>Insight:</strong> Alemães veem o espaço aberto como uma intrusão; eles precisam de "portas pesadas" para se sentirem seguros. Americanos veem portas fechadas como "conspiratórias".
+                    </div>
+                </div>
+
+                <!-- Radar Chart -->
+                <div class="lg:col-span-2 card p-4">
+                    <div class="chart-container" style="height: 450px; width: 100%;">
+                        <canvas id="cultureChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: THESIS SYNTHESIS (Application) -->
+        <section id="synthesis" class="bg-gray-900 text-white rounded-3xl p-8 md:p-12">
+            <h2 class="text-3xl font-bold serif mb-8 text-center">Síntese para o Modelo de Arquitetura Funcional</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Concept 1 -->
+                <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 hover:border-[#7c9082] transition group">
+                    <h3 class="text-xl font-bold text-[#7c9082] mb-3">Espaço de Características Fixas</h3>
+                    <p class="text-gray-300 text-sm mb-4">
+                        As estruturas imutáveis (paredes, janelas). Hall adverte: se o design fixo não suportar os padrões sociais culturais, ocorre o "Sink Comportamental" (stress social).
+                    </p>
+                    <div class="border-t border-gray-700 pt-3">
+                        <span class="text-xs font-mono uppercase tracking-widest text-gray-500 group-hover:text-white transition">Aplicação Prática</span>
+                        <p class="text-xs mt-1 text-gray-400">Dimensione salas não por m², mas por "zonas sociais" possíveis.</p>
+                        
+                    </div>
+                </div>
+
+                <!-- Concept 2 -->
+                <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 hover:border-[#7c9082] transition group">
+                    <h3 class="text-xl font-bold text-[#7c9082] mb-3">Espaço Semifixo</h3>
+                    <p class="text-gray-300 text-sm mb-4">
+                        Mobiliário e objetos móveis. O arranjo "Sociofúgo" (afasta pessoas, ex: cadeiras em linha em aeroportos) vs. "Sociópeto" (une pessoas, ex: mesas redondas).
+                    </p>
+                    <div class="border-t border-gray-700 pt-3">
+                        <span class="text-xs font-mono uppercase tracking-widest text-gray-500 group-hover:text-white transition">Aplicação Prática</span>
+                        <p class="text-xs mt-1 text-gray-400">A flexibilidade do mobiliário é crucial para permitir que os usuários ajustem suas próprias distâncias.</p>
+                    </div>
+                </div>
+
+                <!-- Concept 3 -->
+                <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 hover:border-[#7c9082] transition group">
+                    <h3 class="text-xl font-bold text-[#7c9082] mb-3">Stress e Superlotação</h3>
+                    <p class="text-gray-300 text-sm mb-4">
+                        Baseado nos estudos de Calhoun com ratos. A densidade física não é igual à superlotação percebida. O design pode mitigar a sensação de falta de espaço.
+                    </p>
+                    <div class="border-t border-gray-700 pt-3">
+                        <span class="text-xs font-mono uppercase tracking-widest text-gray-500 group-hover:text-white transition">Aplicação Prática</span>
+                        <p class="text-xs mt-1 text-gray-400">Uso de barreiras visuais e acústicas para criar "refúgios" em ambientes densos.</p>
+                         
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-12 text-center">
+                <p class="italic text-gray-400 max-w-2xl mx-auto">
+                    "O homem criou uma nova dimensão, a dimensão cultural, da qual a proxêmica é apenas uma parte... A relação entre o homem e a dimensão cultural é tal que tanto o homem quanto seu ambiente participam da moldagem um do outro." <br>— Edward T. Hall
+                </p>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-100 border-t border-gray-200 mt-12 py-8">
+        <div class="max-w-7xl mx-auto px-4 text-center text-gray-500 text-sm">
+            <p>Gerado para auxílio em Tese de Doutorado | Fonte: <em>The Hidden Dimension</em>, Edward T. Hall (1966).</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        // --- DATA & STATE ---
+        
+        // Zones Data
+        const zonesData = {
+            labels: ['Íntima', 'Pessoal', 'Social', 'Pública'],
+            data: [0.5, 1.2, 3.6, 7.5], // Illustrative radius sizes for the chart
+            details: [
+                {
+                    title: "Zona Íntima (0 a 45 cm)",
+                    text: "A presença do outro é inconfundível. Envolve olfato, calor radiante e toque. A visão é distorcida e detalhada. A voz é um sussurro. A entrada de estranhos aqui gera reação de defesa imediata (fight or flight).",
+                    metric: "Raio: 0 - 0.45m | Alta Tensão Sensorial",
+                    color: "rgba(239, 68, 68, 0.7)"
+                },
+                {
+                    title: "Zona Pessoal (45 cm a 1,2 m)",
+                    text: "A 'bolha' protetora de um indivíduo. Permite contato físico se desejado (fase próxima) ou mantém o outro ao alcance do braço (fase distante). Onde ocorrem conversas casuais entre amigos.",
+                    metric: "Raio: 0.45m - 1.2m | Limite da Dominação Física",
+                    color: "rgba(59, 130, 246, 0.7)"
+                },
+                {
+                    title: "Zona Social (1,2 m a 3,6 m)",
+                    text: "Distância impessoal para negócios e interações casuais. Ninguém toca ninguém. O contato visual é essencial para manter a interação. Acima de 2 metros, é possível ignorar o outro sem ser rude.",
+                    metric: "Raio: 1.2m - 3.6m | Espaço de Trabalho Padrão",
+                    color: "rgba(16, 185, 129, 0.7)"
+                },
+                {
+                    title: "Zona Pública (3,6 m a 7,5m+)",
+                    text: "Fora do círculo de envolvimento direto. A voz precisa ser elevada. A comunicação torna-se formal. O corpo perde a tridimensionalidade e torna-se plano visualmente.",
+                    metric: "Raio: > 3.6m | Necessidade de Gestos Amplos",
+                    color: "rgba(107, 114, 128, 0.7)"
+                }
+            ]
+        };
+
+        // --- CHART 1: ZONES (Doughnut) ---
+        const ctxZones = document.getElementById('zonesChart').getContext('2d');
+        const zonesChart = new Chart(ctxZones, {
+            type: 'doughnut',
+            data: {
+                labels: zonesData.labels,
+                datasets: [{
+                    data: [15, 25, 35, 25], // Visual proportions, not exact scale for readability
+                    backgroundColor: [
+                        'rgba(239, 68, 68, 0.6)', // Intima
+                        'rgba(59, 130, 246, 0.6)', // Pessoal
+                        'rgba(16, 185, 129, 0.6)', // Social
+                        'rgba(107, 114, 128, 0.6)'  // Publica
+                    ],
+                    borderColor: 'white',
+                    borderWidth: 2,
+                    hoverOffset: 10
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: { font: { family: 'Inter', size: 12 } }
+                    },
+                    tooltip: { enabled: false } // Custom interaction used instead
+                },
+                onClick: (e, activeElements) => {
+                    if (activeElements.length > 0) {
+                        const index = activeElements[0].index;
+                        updateZoneInfo(index);
+                    }
+                }
+            }
+        });
+
+        function updateZoneInfo(index) {
+            const info = zonesData.details[index];
+            document.getElementById('zone-title').innerText = info.title;
+            document.getElementById('zone-title').style.color = info.color.replace('0.7', '1');
+            document.getElementById('zone-text').innerText = info.text;
+            document.getElementById('zone-metric').innerText = info.metric;
+            document.getElementById('zone-description').style.borderLeftColor = info.color.replace('0.7', '1');
+        }
+
+        // --- CHART 2: SENSES (Bar) ---
+        // Showing intensity of sensory reception over distance
+        const ctxSenses = document.getElementById('sensesChart').getContext('2d');
+        new Chart(ctxSenses, {
+            type: 'bar',
+            data: {
+                labels: ['Íntima', 'Pessoal', 'Social', 'Pública'],
+                datasets: [
+                    {
+                        label: 'Calor/Tato',
+                        data: [100, 20, 0, 0],
+                        backgroundColor: 'rgba(239, 68, 68, 0.5)',
+                        borderColor: 'rgba(239, 68, 68, 1)',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Olfato',
+                        data: [90, 40, 10, 0],
+                        backgroundColor: 'rgba(251, 191, 36, 0.5)',
+                        borderColor: 'rgba(251, 191, 36, 1)',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Visão (Detalhe)',
+                        data: [60, 100, 80, 40],
+                        backgroundColor: 'rgba(59, 130, 246, 0.5)',
+                        borderColor: 'rgba(59, 130, 246, 1)',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Audição (Volume Normal)',
+                        data: [40, 90, 100, 30],
+                        backgroundColor: 'rgba(139, 92, 246, 0.5)',
+                        borderColor: 'rgba(139, 92, 246, 1)',
+                        borderWidth: 1
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: { display: true, text: 'Intensidade Sensorial Percebida (%)' }
+                    }
+                },
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Decaimento Sensorial por Distância'
+                    }
+                }
+            }
+        });
+
+        // --- CHART 3: CULTURE (Radar) ---
+        const ctxCulture = document.getElementById('cultureChart').getContext('2d');
+        
+        // Data definitions based on Hall's comparative analysis
+        const cultureData = {
+            labels: ['Privacidade Auditiva', 'Privacidade Visual', 'Rigidez Territorial', 'Uso do Olfato', 'Proximidade Física', 'Importância de Portas'],
+            datasets: [
+                {
+                    label: 'Americanos',
+                    data: [40, 50, 50, 10, 50, 30], // Middle class standard
+                    borderColor: 'rgba(59, 130, 246, 1)',
+                    backgroundColor: 'rgba(59, 130, 246, 0.2)',
+                    hidden: false
+                },
+                {
+                    label: 'Alemães',
+                    data: [90, 90, 90, 10, 30, 95], // High privacy needs, heavy doors, distinct territory
+                    borderColor: 'rgba(239, 68, 68, 1)',
+                    backgroundColor: 'rgba(239, 68, 68, 0.2)',
+                    hidden: true
+                },
+                {
+                    label: 'Japoneses',
+                    data: [20, 30, 40, 20, 80, 10], // Thin walls, clustering, center-focused
+                    borderColor: 'rgba(16, 185, 129, 1)',
+                    backgroundColor: 'rgba(16, 185, 129, 0.2)',
+                    hidden: true
+                },
+                {
+                    label: 'Árabes',
+                    data: [10, 10, 20, 90, 95, 10], // High sensory involvement, breathing on people allowed, no "private bubble" in public
+                    borderColor: 'rgba(249, 115, 22, 1)',
+                    backgroundColor: 'rgba(249, 115, 22, 0.2)',
+                    hidden: true
+                }
+            ]
+        };
+
+        const cultureChart = new Chart(ctxCulture, {
+            type: 'radar',
+            data: cultureData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    r: {
+                        angleLines: { display: true },
+                        suggestedMin: 0,
+                        suggestedMax: 100,
+                        ticks: { display: false } // Hide numbers for cleaner look
+                    }
+                },
+                plugins: {
+                    legend: { display: true }
+                }
+            }
+        });
+
+        // Interactive toggle for Culture Chart
+        function toggleDataset(index) {
+            const isHidden = cultureChart.isDatasetVisible(index);
+            cultureChart.setDatasetVisibility(index, !isHidden);
+            cultureChart.update();
+            
+            // Update Insight Text based on selection
+            const insights = [
+                "Americanos tratam o espaço como uniforme. Evitam contato físico intenso com estranhos, mas não exigem barreiras físicas pesadas como os Alemães.",
+                "Alemães veem o espaço pessoal como uma extensão do ego. Uma porta aberta é uma violação. A privacidade acústica é vital para a concentração.",
+                "Japoneses focam no centro do espaço, não nas bordas. As paredes são móveis. A superlotação é gerida dormindo junto (layout de 'peixe').",
+                "Para os Árabes, o conceito de 'privacidade' em público é inexistente. Respirar no rosto do interlocutor é sinal de comunicação; recuar é rude."
+            ];
+            
+            // If turning ON a dataset, show its insight
+            if (!cultureChart.isDatasetVisible(index)) { // Logic inverted because we just toggled
+                 // do nothing
+            } else {
+                 document.getElementById('culture-insight').innerHTML = `<strong>Insight Cultural:</strong> ${insights[index]}`;
+            }
+        }
+
+        // --- UTILS ---
+        function scrollToSection(id) {
+            document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Initial setup
+        updateZoneInfo(1); // Set "Pessoal" as default
+        
+    </script>
+</body>
+</html>
